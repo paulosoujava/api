@@ -6,6 +6,8 @@ Técnologias envolvidas  Srping Boot, Mongo DB, Swagger.
 # Endpoint
 
 http://localhost:8080/api/product/search
+
+
 http://localhost:8080/
 
 ## Swagger
