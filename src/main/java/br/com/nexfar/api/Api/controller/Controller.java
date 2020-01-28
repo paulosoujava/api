@@ -22,9 +22,7 @@ public class Controller {
 	/*
 	 * IDCLIENT = 138  -> HEADER
 	 * VENAFLON -> BODY
-	 */
-			
-
+	 */			
 	@PostMapping("/api/product/search")
 	public ResponseEntity<List<ResultSearchDTO>> searchProduct(
 			@RequestHeader("clientId") int clientId,

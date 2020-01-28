@@ -30,16 +30,12 @@ import br.com.nexfar.api.Api.domain.ResultSearchDTO;
 import br.com.nexfar.api.Api.domain.Taxes;
 
 public class Mongos {
-	// MongoClient mongoClient = new MongoClient(new
-	// MongoClientURI("mongodb://localhost:27017"));
 	MongoClient mongoClient = new MongoClient();
 	DB database = mongoClient.getDB("Nexfar-CargaDados");
 	DBCollection collection;
 
 	public List<ResultSearchDTO> searchProducByName(String nome, String idCLient) {
-
 		List<ResultSearchDTO> pDTO = new ArrayList<>();
-
 		BasicDBObject query = new BasicDBObject();
 		query.put("name", Pattern.compile("^.*" + nome + ".*$", Pattern.CASE_INSENSITIVE));
 		collection = database.getCollection("products");
@@ -54,7 +50,7 @@ public class Mongos {
 			ResultSearchDTO r = new ResultSearchDTO();
 			r.setProducts(p);
 			r.setTaxe(checkRestrictions(idCLient, p));
-				pDTO.add(r);
+			pDTO.add(r);
 		}
 
 		return pDTO;
@@ -66,7 +62,7 @@ public class Mongos {
 		collection = database.getCollection("productSellingRestrictions");
 		BasicDBObject query = new BasicDBObject();
 		query.put("idCliente", idCliente);
-		query.put("idProduto", p.getProductId());
+		query.put("idProduto", p.getProductId().toString());
 		Cursor cursor = collection.find(query);
 		while (cursor.hasNext()) {
 			double taxe = calculateTaxes(idCliente, p);
@@ -77,6 +73,7 @@ public class Mongos {
 	}
 
 	private double calculateTaxes(String idCliente, Products p) {
+
 		collection = database.getCollection("taxes");
 		BasicDBObject query = new BasicDBObject();
 		query.put("clientId", idCliente);
@@ -101,7 +98,7 @@ public class Mongos {
 
 			}
 		}
-
+		// calculo
 		double xIcms = icms;
 		double hundred = 100;
 		double totalPart1 = xIcms / hundred;
@@ -109,17 +106,9 @@ public class Mongos {
 		double xIpi = ipi;
 		double totalPart2 = xIpi / hundred;
 		double result = newValue + (newValue * totalPart1) + (newValue * totalPart2);
+
 		return round(result, 2);
 
-	}
-
-	public static double round(double value, int places) {
-		if (places < 0)
-			throw new IllegalArgumentException();
-
-		BigDecimal bd = BigDecimal.valueOf(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
 	}
 
 	public boolean hasClient(String idCliente) {
@@ -141,6 +130,15 @@ public class Mongos {
 		}
 		return false;
 
+	}
+
+	private static double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = BigDecimal.valueOf(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 }
