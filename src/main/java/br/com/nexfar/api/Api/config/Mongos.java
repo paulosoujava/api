@@ -65,8 +65,8 @@ public class Mongos {
 
 		collection = database.getCollection("productSellingRestrictions");
 		BasicDBObject query = new BasicDBObject();
-		query.put("idCliente", "138");
-		query.put("idProduto", "23215");
+		query.put("idCliente", idCliente);
+		query.put("idProduto", p.getProductId());
 		Cursor cursor = collection.find(query);
 		while (cursor.hasNext()) {
 			double taxe = calculateTaxes(idCliente, p);
